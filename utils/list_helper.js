@@ -27,9 +27,24 @@ const mostBlogs = (blogs) => {
 	}
 }
 
+const mostLikes = (blogs) => {
+	const grouped = collection.groupBy(blogs, 'author')
+	const mostLike = object.values(grouped)
+		.reduce((a,b) => b.map(x=>x.likes).reduce((c,d) => c + d, 0)
+		> a.map(x=>x.likes).reduce((c,d) => c + d, 0)
+		? b : a,
+		object.values(grouped)[0])
+
+	return {
+		author: mostLike[0].author,
+		likes: mostLike.map(x=>x.likes).reduce((c,d) => c + d, 0)
+	}
+}
+
 module.exports = {
 	dummy,
 	totalLikes,
 	favouriteBlog,
-	mostBlogs
+	mostBlogs,
+	mostLikes
 }
