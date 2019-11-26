@@ -21,6 +21,12 @@ test('database has correct amount of blog entries', async () => {
     expect(res.body.length).toBe(helper.initialBlogs.length)
 })
 
+test('is the unique identifier appropriately named id in all entries', async () => {
+    const res = await api.get('/api/blogs')
+    
+    res.body.map(x => expect(x.id).toBeDefined())
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
