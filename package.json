@@ -12,12 +12,14 @@
     "mongoose": "^5.7.12"
   },
   "devDependencies": {
+    "cross-env": "^6.0.3",
     "jest": "^24.9.0",
-    "nodemon": "^2.0.0"
+    "nodemon": "^2.0.0",
+    "supertest": "^4.0.2"
   },
   "scripts": {
     "watch": "nodemon index.js",
-    "test": "jest --verbose"
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand"
   },
   "repository": {
     "type": "git",
