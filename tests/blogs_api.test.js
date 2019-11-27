@@ -44,7 +44,17 @@ test('does POST work and is the content saved correctly on the database', async 
 
     expect(blogsInDB.body.length).toBe(helper.initialBlogs.length + 1)
     expect(blogsInDB.body[helper.initialBlogs.length].title).toBe('Esimerkkiblogi')
+})
 
+test('if the "likes" value is missing it will default to 0', async () => {
+    const newBlog = {
+        title: 'Esimerkkiblogi',
+        author: 'Arnold The Doughnut',
+        url: 'https://www.google.com/search?q=arnold%27s+doughnuts'
+    }
+
+    await api.post('/api/blogs').send(newBlog)
+        .expect(response => expect(response.body.likes).toBe(0))
 })
 
 afterAll(() => {
