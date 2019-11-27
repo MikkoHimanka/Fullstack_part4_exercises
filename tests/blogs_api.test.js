@@ -37,7 +37,7 @@ test('does POST work and is the content saved correctly on the database', async 
 
     await api.post('/api/blogs')
         .send(newBlog)
-        .expect(201)
+        .expect(200)
         .expect('Content-Type', /application\/json/)
 
     const blogsInDB = await api.get('/api/blogs')
@@ -55,6 +55,28 @@ test('if the "likes" value is missing it will default to 0', async () => {
 
     await api.post('/api/blogs').send(newBlog)
         .expect(response => expect(response.body.likes).toBe(0))
+})
+
+test('if title or url is missing 400 is returned', async () => {
+    const newBlog = {
+        author: 'Arnold The Doughnut',
+        url: 'https://www.google.com/search?q=arnold%27s+doughnuts',
+        likes: 8864531421
+    }
+    await api.post('/api/blogs').send(newBlog).expect(400)
+
+    const newBlog2 = {
+        title: 'No URL',
+        author: 'Arnold The Doughnut',
+        likes: 7
+    }
+    await api.post('/api/blogs').send(newBlog2).expect(400)
+
+    const newBlog3 = {
+        author: 'Arnold The Doughnut',
+        likes: 7
+    }
+    await api.post('/api/blogs').send(newBlog3).expect(400)
 })
 
 afterAll(() => {
