@@ -35,11 +35,11 @@ blogsRouter.post('/', async (request, response, next) => {
   }
 })
 
-blogsRouter.get('/:id', async (request, response, next) => {
-  const blog = await Blog.findById(request.params.id).populate('user', { username: 1, _id: 1 })
-  const blogUser = await User.findById(blog.user.id)
-  response.json(blogUser.toJSON())
-})
+// blogsRouter.get('/:id', async (request, response, next) => {
+//   const blog = await Blog.findById(request.params.id).populate('user', { username: 1, _id: 1 })
+//   const blogUser = await User.findById(blog.user.id)
+//   response.json(blogUser.toJSON())
+// })
 
 blogsRouter.delete('/:id', async (request, response, next) => {
   try {
