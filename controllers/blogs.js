@@ -35,13 +35,40 @@ blogsRouter.post('/', async (request, response, next) => {
   }
 })
 
+blogsRouter.get('/:id', async (request, response, next) => {
+  const blog = await Blog.findById(request.params.id).populate('user', { username: 1, _id: 1 })
+  const blogUser = await User.findById(blog.user.id)
+  response.json(blogUser.toJSON())
+})
+
 blogsRouter.delete('/:id', async (request, response, next) => {
   try {
-    await Blog.findByIdAndRemove(request.params.id)
-    response.status(204).end()
-  } catch (exception) {
-    next(exception) 
-  }
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    
+    if (!request.token || !decodedToken.id) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    }
+
+    const blog = await Blog.findById(request.params.id).populate('user', { username: 1, _id: 1 })
+    
+    if (!blog) {
+      return response.status(400).json( { error: 'cannot find blog' })
+    }
+    
+    const blogUser = await User.findById(blog.user.id)
+
+
+    if (decodedToken.id.toString() === blogUser.id.toString()) {
+      try {
+        await Blog.findByIdAndRemove(request.params.id)
+        response.status(204).end()
+      } catch (exception) {
+        next(exception) 
+      }
+    } else {
+      response.status(400).json({ error: 'user token doesn\'t match' })
+    }
+  } catch (exception) { next(exception) }
 })
 
 blogsRouter.put('/:id', async (request, response, next) => {
